@@ -4,6 +4,7 @@ import { Inter, IBM_Plex_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
+import { dark } from "@clerk/themes";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,7 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${PlexMono.variable} antialiased`}>
-        <ClerkProvider>
+        <ClerkProvider
+          appearance={{
+            theme: dark,
+          }}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
