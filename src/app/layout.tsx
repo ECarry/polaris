@@ -3,6 +3,7 @@ import { Inter, IBM_Plex_Mono } from "next/font/google";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ConvexClientProvider } from "@/components/convex-client-provider";
 import "./globals.css";
 import { dark } from "@clerk/themes";
 
@@ -41,7 +42,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <ConvexClientProvider>{children}</ConvexClientProvider>
           </ThemeProvider>
         </ClerkProvider>
       </body>
