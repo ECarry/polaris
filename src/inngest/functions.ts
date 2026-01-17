@@ -22,7 +22,7 @@ export const demoGenerate = inngest.createFunction(
             formats: ["markdown"],
           });
           return result.markdown ?? null;
-        })
+        }),
       );
 
       return results.filter(Boolean).join("\n\n");
@@ -35,10 +35,15 @@ export const demoGenerate = inngest.createFunction(
     await step.run("generate-text", async () => {
       return await generateText({
         model: google("gemini-2.5-flash"),
+        experimental_telemetry: {
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
         prompt: finalPrompt,
       });
     });
-  }
+  },
 );
 
 export const demoError = inngest.createFunction(
@@ -48,5 +53,5 @@ export const demoError = inngest.createFunction(
     await step.run("fail", async () => {
       throw new Error("Inngest error: Something went wrong in the background!");
     });
-  }
+  },
 );
