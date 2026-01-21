@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,13 @@ import { SparkleIcon } from "lucide-react";
 import { Poppins } from "next/font/google";
 import { FaGithub } from "react-icons/fa";
 import { ProjectsList } from "./projects-list";
+import { useCreateProject } from "../hooks/use-projects";
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  colors,
+  animals,
+} from "unique-names-generator";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -15,7 +23,7 @@ const font = Poppins({
 
 export const ProjectsView = () => {
   // const projects = useQuery(api.projects.get);
-  // const createProject = useMutation(api.projects.create);
+  const createProject = useCreateProject();
 
   return (
     <div className="min-h-screen bg-sidebar flex flex-col items-center justify-center p-6 md:p-16">
@@ -42,7 +50,15 @@ export const ProjectsView = () => {
           <div className="grid grid-cols-2 gap-2">
             <Button
               variant="outline"
-              onClick={() => {}}
+              onClick={() => {
+                const name = uniqueNamesGenerator({
+                  dictionaries: [adjectives, colors, animals],
+                  separator: "-",
+                  length: 3,
+                });
+
+                createProject({ name });
+              }}
               className="h-full items-start justify-start p-4 bg-background border flex flex-col gap-6 rounded-none"
             >
               <div className="flex items-center justify-between w-full">
@@ -69,7 +85,7 @@ export const ProjectsView = () => {
             </Button>
           </div>
 
-          <ProjectsList />
+          <ProjectsList onViewAll={() => {}} />
         </div>
       </div>
     </div>
