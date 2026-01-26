@@ -1,7 +1,7 @@
-import React from "react";
+const page = async ({ params }: { params: Promise<{ projectId: string }> }) => {
+  const { projectId } = await params;
 
-const page = () => {
-  return <div>page</div>;
+  return <div>page {projectId}</div>;
 };
 
 export default page;
