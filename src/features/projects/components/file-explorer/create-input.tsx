@@ -27,8 +27,6 @@ export const CreateInput = ({
     }
   };
 
-  console.log("level", level);
-
   return (
     <div
       className="w-full flex items-center gap-1 h-5.5 bg-accent/30"
