@@ -7,6 +7,11 @@ import {
   useRenameFile,
   useFolderContents,
 } from "../../hooks/use-files";
+import { TreeItemWrapper } from "./tree-item-wrapper";
+import { FileIcon, FolderIcon } from "@react-symbols/icons/utils";
+import { ChevronRightIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { LoadingRow } from "./loading-row";
 
 export const Tree = ({
   item,
@@ -32,13 +37,83 @@ export const Tree = ({
     enabled: item.type === "folder" && isOpen,
   });
 
+  const startCreating = (type: "file" | "folder") => {
+    setIsOpen(true);
+    setCreating(type);
+  };
+
   if (item.type === "file") {
+    const fileName = item.name;
+
     return (
-      <div>
-        <div>file</div>
-      </div>
+      <TreeItemWrapper
+        item={item}
+        level={level}
+        isActive={false}
+        onClick={() => {}}
+        onRename={() => setIsRenaming(true)}
+        onDelete={() => {
+          // TODO:Close tab
+          deleteFile({
+            id: item._id,
+          });
+        }}
+        onCreateFile={() => startCreating("file")}
+        onCreateFolder={() => startCreating("folder")}
+      >
+        <FileIcon fileName={fileName} autoAssign className="size-4" />
+        <span className="truncate text-sm">{fileName}</span>
+      </TreeItemWrapper>
     );
   }
 
-  return <div>Folder</div>;
+  const folderName = item.name;
+  const folderContent = (
+    <>
+      <div className="flex items-center gap-0.5">
+        <ChevronRightIcon
+          className={cn(
+            "size-4 shrink-0 text-muted-foreground",
+            isOpen && "rotate-90",
+          )}
+        />
+        <FolderIcon folderName={folderName} className="size-4" />
+      </div>
+      <span className="truncate text-sm">{folderName}</span>
+    </>
+  );
+
+  return (
+    <>
+      <TreeItemWrapper
+        item={item}
+        level={level}
+        onClick={() => {}}
+        onRename={() => setIsRenaming(true)}
+        onDelete={() => {
+          // TODO:Close tab
+          deleteFile({
+            id: item._id,
+          });
+        }}
+        onCreateFile={() => startCreating("file")}
+        onCreateFolder={() => startCreating("folder")}
+      >
+        {folderContent}
+      </TreeItemWrapper>
+      {isOpen && (
+        <>
+          {folderContents === undefined && <LoadingRow level={level + 1} />}
+          {folderContents?.map((subitem) => {
+            <Tree
+              key={subitem._id}
+              item={subitem}
+              level={level + 1}
+              projectId={projectId}
+            />;
+          })}
+        </>
+      )}
+    </>
+  );
 };
