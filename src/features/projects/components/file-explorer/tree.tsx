@@ -88,7 +88,7 @@ export const Tree = ({
       <TreeItemWrapper
         item={item}
         level={level}
-        onClick={() => {}}
+        onClick={() => setIsOpen((prev) => !prev)}
         onRename={() => setIsRenaming(true)}
         onDelete={() => {
           // TODO:Close tab
