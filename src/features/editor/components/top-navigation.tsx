@@ -1,6 +1,11 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useEditor } from "../hooks/use-editor";
+import { useFile } from "@/features/projects/hooks/use-files";
+import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
+import { FileIcon } from "@react-symbols/icons/utils";
+import { XIcon } from "lucide-react";
 
 export const Tab = ({
   fileId,
@@ -11,7 +16,55 @@ export const Tab = ({
   isFirst: boolean;
   projectId: Id<"projects">;
 }) => {
-  return <div>Tab</div>;
+  const file = useFile(fileId);
+  const { activeTabId, setActiveTab, previewTabId, openFile, closeTab } =
+    useEditor(projectId);
+
+  const isActive = activeTabId === fileId;
+  const isPreview = previewTabId === fileId;
+  const fileName = file?.name ?? "Loading...";
+
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-2 h-8.75 pl-2 pr-1.5 cursor-pointer text-muted-foreground border-x border-y group border-transparent hover:border-accent/30",
+        isFirst && "border-l-transparent!",
+        isActive &&
+          "bg-background text-foreground border-x-border border-b-background -mb-px drop-shadow",
+      )}
+      onClick={() => setActiveTab(fileId)}
+      onDoubleClick={() => openFile(fileId, { pinned: true })}
+    >
+      {file === undefined ? (
+        <Spinner className="text-ring" />
+      ) : (
+        <FileIcon fileName={fileName} autoAssign className="size-4" />
+      )}
+      <span className={cn("text-sm whitespace-nowrap", isPreview && "italic")}>
+        {fileName}
+      </span>
+      <button
+        className={cn(
+          "p-0.5 rounded-sm hover:bg-white/10 opacity-0 group-hover:opacity-100",
+          isActive && "opacity-100",
+        )}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          closeTab(fileId);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            closeTab(fileId);
+          }
+        }}
+      >
+        <XIcon className="size-3.5" />
+      </button>
+    </div>
+  );
 };
 
 export const TopNavigation = ({ projectId }: { projectId: Id<"projects"> }) => {
